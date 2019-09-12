@@ -4,20 +4,32 @@
 #################################################
 # file to edit: dev_nb/05_fastpm_petrinet.ipynb
 
+from __future__ import print_function
+from ipywidgets import interact, interactive, fixed, interact_manual
+import ipywidgets as widgets
+import numpy as np
+import networkx as nx
+from nxpd import draw
+from nxpd import nxpdParams
+nxpdParams['show'] = 'ipynb'
+from functools import partial,update_wrapper
+
+
 class PetriNet:
     def __init__(self,P,T,I,O,m0):
-        self.P,self.T,self.I,self.O,self.m0=P,T,I,O,m0
+        self.P,self.T,self.I,self.O,self.m0=np.array(P),np.array(T),np.array(I),np.array(O),np.array(m0)
         self.Ic=O-I
         self.reset()
     def view(self):
+
         G = nx.DiGraph()
         G.graph['rankdir'] = 'LR'
         G.graph['dpi'] = 70
-
-
-
         for i in range(len(self.T)):
-            G.add_node(self.T[i],shape='square',style='filled',fillcolor='grey',label=self.T[i])
+            if self.T[i].startswith('_'):
+                G.add_node(self.T[i],label=' ',shape='square',style='filled',fillcolor='black')
+            else:
+                G.add_node(self.T[i],shape='square',style='filled',fillcolor='grey',label=self.T[i].split('_')[0])
         for i in range(len(self.P)):
             label=self.m[i] if self.m[i] else ' '
             if i==0: G.add_node(self.P[i],label=label,style='filled',fillcolor='green')
@@ -33,13 +45,72 @@ class PetriNet:
                 if self.O[i,j]==1:
                     G.add_edge(self.T[i],self.P[j])
 
-
         return draw(G)
-    def transition(self):
-        t=(self.m>=self.I).all(axis=1)
-        print(t)
+
+    def transition(self,event):
+        t=self.T==event
         self.m=np.matmul(t, self.Ic)+self.m
-        print(self.m)
 
     def reset(self):
         self.m=self.m0
+    def _animate(self,trace,x=0):
+        self.reset()
+        event=0
+        for i in range(x):
+            event=trace[i]
+            self.transition(event)
+        if x!=0:print(event)
+        return self.view()
+
+    @classmethod
+    def from_simple_grammar(cls,s:list):
+
+        def t_in_trans(i,t,rel):
+            res=False
+            r=rel.split('->')[i]
+            for j in r.split(','):
+                if j==t: res=True
+            return res
+
+        trans=set()
+        for t in s:
+            inp,out=t.split('->')
+            for i in inp.split(','): trans.add(i)
+            for i in out.split(','): trans.add(i)
+        trans=list(trans)
+
+        places=list(range(len(s)))
+        trans.remove('')
+
+        I=np.zeros(((len(trans),len(places))))
+        O=np.zeros(((len(trans),len(places))))
+        for p in range(len(places)):
+            for t in range(len(trans)):
+                if t_in_trans(0,trans[t],s[p]): O[t,p]+=1
+                if t_in_trans(1,trans[t],s[p]): I[t,p]+=1
+        m0=[0 for i in s]
+        m0[0]=1
+        return PetriNet(places,trans,I,O,m0)
+
+
+    def animate(self,trace):
+        print(trace)
+        return interact(self._animate,trace=fixed(trace),x=widgets.IntSlider(min=0, max=len(trace), step=1, value=0))
+
+nets=[
+    ['->A','A->B,C','B,C->D','B->E','D->E,F','E,F->I','C->_1,G','_1,G->H','H->F','I->'],
+    ['->A','A->B','B->D','D->E','E->I','I->'],
+    ['->_1','_1,A,B,C,D,E,F,G,H,I->_2,A,B,C,D,E,F,G,H,I','_2->'],
+    ['->A_1,A_2,A_3,A_4,A_5',
+     'A_1->B','B->D_1','D_1->E','E->I_1',
+     'A_2->C_1','C_1->D_2','D_2->G_1','G_1->H_1','H_1->F_1','F_1->I_2',
+     'A_3->C_2','C_2->G_2','G_2->D_3','D_3->H_2','H_2->F_2','F_2->I_3',
+     'A_4->C_3','C_3->H_3','H_3->D_4','D_4->F_3','F_3->I_4',
+     'A_5->C_4','C_4->D_5','D_5->H_4','H_4->F_4','F_4->I_5',
+     'I_1,I_2,I_3,I_4,I_5->'],
+    ['->A','A->B,C','B,C->D','D->E,F','B->E','C->_1,G','_1,G->F','C->_2,H','_2,H->F','E,F->I','I->'],
+    ['->A','A->B,C','B,C->D','D->E,F','B->E','E,F->I','C,G,H->G,H,F','I->'],
+    ['->A','A->B,C','B,C,D->D,E,F','C->_1,G','_1,G->H','H->F','B->E','E,F->I','I->'],
+    ['->_1','_1->A,B,C,D,E,F,G,H,I','A,B,C,D,E,F,G,H,I->_2','_2->']
+
+]
