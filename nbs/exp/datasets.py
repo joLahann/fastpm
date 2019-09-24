@@ -6,52 +6,45 @@
 
 from exp.imports import *
 
-from typing import Union
-from pathlib import Path
-import zipfile
-
-
-import gzip
-import shutil
-
-
-URL ='https://data.4tu.nl/repository/'
+URL ='https://cloud.dfki.de/owncloud/index.php/s/FC2s2j23dHrPWxY'
+LOCAL_PATH = Path.cwd()
 
 
 class URLs():
     "Global constants for dataset URLs."
     LOCAL_PATH = Path.cwd()
-
+    BASE ='https://cloud.dfki.de/owncloud/index.php/s/FC2s2j23dHrPWxY/'
+    LOG=f"{BASE}download?path=%2Fevent_logs&files="
 
 
     # BPI Challenges
-    BPIC_2012  = f'{URL}uuid:3926db30-f712-4394-aebc-75976070e91f/DATA1'
+    BPIC_2012  = f'{LOG}BPI_Challenge_2012.xes.gz'
 
-    BPIC_2013_closed_problems  = 'https://data.4tu.nl/repository/uuid:c2c3b154-ab26-4b31-a0e8-8f2350ddac11/DATA1?download=true'
-    BPIC_2013_open_problems = 'https://data.4tu.nl/repository/uuid:3537c19d-6c64-4b1d-815d-915ab0e479da/DATA1?download=true'
-    BPIC_2013_incidents = 'https://data.4tu.nl/repository/uuid:500573e6-accc-4b0c-9576-aa5468b10cee/DATA1?download=true'
+    BPIC_2013_closed_problems  = f'{LOG}BPI_Challenge_2013_closed_problems.xes.gz'
+    BPIC_2013_open_problems = f'{LOG}BPI_Challenge_2013_open_problems.xes.gz'
+    BPIC_2013_incidents = f'{LOG}BPI_Challenge_2013_incidents.xes.gz'
 
-    BPIC_2014_incidents_activity_log = 'https://data.4tu.nl/repository/uuid:86977bac-f874-49cf-8337-80f26bf5d2ef/DATA?download=true'
-    BPIC_2014_change_details = 'https://data.4tu.nl/repository/uuid:d5ccb355-ca67-480f-8739-289b9b593aaf/DATA?download=true'
-    BPIC_2014_incident_details = 'https://data.4tu.nl/repository/uuid:3cfa2260-f5c5-44be-afe1-b70d35288d6d/DATA?download=true'
-    BPIC_2014_interaction_details = 'https://data.4tu.nl/repository/uuid:3d5ae0ce-198c-4b5c-b0f9-60d3035d07bf/DATA?download=true'
+    BPIC_2014_incidents_activity_log = f'{LOG}BPI_Challenge_2014_Detail_Incident_Activity.csv.gz'
+    BPIC_2014_change_details = f'{LOG}BPI_Challenge_2014_Detail_Change.csv.gz'
+    BPIC_2014_incident_details = f'{LOG}BPI_Challenge_2014_Detail_Incident.csv.gz'
+    BPIC_2014_interaction_details = f'{LOG}BPI_Challenge_2014_Detail_Interaction.csv.gz'
 
-    BPIC_2015_Municipality_1 = 'https://data.4tu.nl/repository/uuid:a0addfda-2044-4541-a450-fdcc9fe16d17/DATA1?download=true'
-    BPIC_2015_Municipality_2 = 'https://data.4tu.nl/repository/uuid:63a8435a-077d-4ece-97cd-2c76d394d99c/DATA1?download=true'
-    BPIC_2015_Municipality_3 = 'https://data.4tu.nl/repository/uuid:ed445cdd-27d5-4d77-a1f7-59fe7360cfbe/DATA1?download=true'
-    BPIC_2015_Municipality_4 = 'https://data.4tu.nl/repository/uuid:679b11cf-47cd-459e-a6de-9ca614e25985/DATA1?download=true'
-    BPIC_2015_Municipality_5 = 'https://data.4tu.nl/repository/uuid:b32c6fe5-f212-4286-9774-58dd53511cf8/DATA1?download=true'
+    BPIC_2015_Municipality_1 = f'{LOG}BPIC15_1.xes.gz'
+    BPIC_2015_Municipality_2 = f'{LOG}BPIC15_2.xes.gz'
+    BPIC_2015_Municipality_3 = f'{LOG}BPIC15_3.xes.gz'
+    BPIC_2015_Municipality_4 = f'{LOG}BPIC15_4.xes.gz'
+    BPIC_2015_Municipality_5 = f'{LOG}BPIC15_5.xes.gz'
 
-    BPIC_2016_Clicks_Logged_in = 'https://data.4tu.nl/repository/uuid:01345ac4-7d1d-426e-92b8-24933a079412/DATA1?download=true'
-    BPIC_2016_Clicks_Not_Logged_in = 'https://data.4tu.nl/repository/uuid:9b99a146-51b5-48df-aa70-288a76c82ec4/DATA1?download=true'
-    BPIC_2016_Complaints = 'https://data.4tu.nl/repository/uuid:e30ba0c8-0039-4835-a493-6e3aa2301d3f/DATA?download=true'
-    BPIC_2016_Questions = 'https://data.4tu.nl/repository/uuid:2b02709f-9a84-4538-a76a-eb002eacf8d1/DATA?download=true'
-    BPIC_2016_Werkmap_Messages = 'https://data.4tu.nl/repository/uuid:c3f3ba2d-e81e-4274-87c7-882fa1dbab0d/DATA?download=true'
+    BPIC_2016_Clicks_Logged_in = f'{LOG}BPI2016_Clicks_Logged_In.csv.gz'
+    BPIC_2016_Clicks_Not_Logged_in = f'{LOG}BPI2016_Clicks_NOT_Logged_In.csv.gz'
+    BPIC_2016_Complaints = f'{LOG}BPI2016_Complaints.csv.gz'
+    BPIC_2016_Questions = f'{LOG}BPI2016_Questions.csv.gz'
+    BPIC_2016_Werkmap_Messages = f'{LOG}BPI2016_Werkmap_Messages.csv.gz'
 
-    BPIC_2017 = 'https://data.4tu.nl/repository/uuid:5f3067df-f10b-45da-b98b-86ae4c7a310b/DATA1'
-    BPIC_2017_offer_log = 'https://data.4tu.nl/repository/uuid:7e326e7e-8b93-4701-8860-71213edf0fbe/DATA1'
-    BPIC_2018 = 'https://data.4tu.nl/repository/uuid:3301445f-95e8-4ff0-98a4-901f1f204972/DATA1'
-    BPIC_2019 = 'http://icpmconference.org/2019/wp-content/uploads/sites/6/2019/01/log_IEEE.xes_.gz'
+    BPIC_2017 = f'{LOG}BPI Challenge 2017.xes.gz'
+    BPIC_2017_offer_log = f'{LOG}BPI Challenge 2017_offer_log.xes.gz'
+    BPIC_2018 = f'{LOG}BPI Challenge 2018.xes.gz'
+    BPIC_2019 = f'{LOG}BPI_Challenge_2019.xes.gz'
 
 
     # Process Discovery Contest
@@ -71,55 +64,13 @@ class URLs():
     PDC_2019_Test2 = 'http://icpmconference.org/2019/wp-content/uploads/sites/6/2019/04/log-15March.zip'
 
 
-_filenames={
-    # BPI Challenge
-    URLs.BPIC_2012:"BPIC_2012/BPI_Challenge_2012.xes.gz",
-    URLs.BPIC_2013_closed_problems: "BPIC_2013/BPI_Challenge_2013_closed_problems.xes.gz",
-    URLs.BPIC_2013_open_problems: "BPIC_2013/BPI_Challenge_2013_open_problems.xes.gz",
-    URLs.BPIC_2013_incidents: "BPIC_2013/BPI_Challenge_2013_incidents.xes.gz",
-    URLs.BPIC_2014_incidents_activity_log: "BPIC_2014/Detail_Incident_Activity.csv",
-    URLs.BPIC_2014_change_details: "BPIC_2014/Detail_Change.csv",
-    URLs.BPIC_2014_incident_details: "BPIC_2014/Detail_Incident.csv",
-    URLs.BPIC_2014_interaction_details: "BPIC_2014/Detail_Interaction.csv",
-    URLs.BPIC_2015_Municipality_1: "BPIC_2015/BPIC15_1.xes",
-    URLs.BPIC_2015_Municipality_2: "BPIC_2015/BPIC15_2.xes",
-    URLs.BPIC_2015_Municipality_3: "BPIC_2015/BPIC15_3.xes",
-    URLs.BPIC_2015_Municipality_4: "BPIC_2015/BPIC15_4.xes",
-    URLs.BPIC_2015_Municipality_5: "BPIC_2015/BPIC15_5.xes",
-    URLs.BPIC_2016_Clicks_Logged_in: "BPIC_2016/BPI2016_Clicks_Logged_In.csv.zip",
-    URLs.BPIC_2016_Clicks_Not_Logged_in: "BPIC_2016/BPI2016_Clicks_NOT_Logged_In.csv.zip",
-    URLs.BPIC_2016_Complaints: "BPIC_2016/BPI2016_Complaints.csv",
-    URLs.BPIC_2016_Questions: "BPIC_2016/BPI2016_Questions.csv",
-    URLs.BPIC_2016_Werkmap_Messages: "BPIC_2016/BPI2016_Werkmap_Messages.csv",
-    URLs.BPIC_2017: "BPIC_2017/BPI_Challenge_2017.xes.gz",
-    URLs.BPIC_2017_offer_log: "BPIC_2017/BPI_Challenge_2017_Offerlog.xes.gz",
-    URLs.BPIC_2018: "BPIC_2018/BPI_Challenge_2018.xes",
-    URLs.BPIC_2019: "BPIC_2019/BPI_Challenge_2019.xes.gz",
-
-    # Process Discovery Contest
-
-    URLs.PDC_2016_Training : 'PDC_2016/Training/Training.zip',
-    URLs.PDC_2016_Test : 'PDC_2016/Test/Test.zip',
-    URLs.PDC_2016_Models : 'PDC_2016/Models/Models.zip',
-
-    URLs.PDC_2017_Training : 'PDC_2017/Training/Training.zip',
-    URLs.PDC_2017_Test : 'PDC_2017/Test/Test.zip',
-    URLs.PDC_2017_Models : 'PDC_2017/Models/Models.zip',
-
-    URLs.PDC_2019_Training : 'PDC_2019/Training/Training.zip',
-    URLs.PDC_2019_Test1 : 'PDC_2019/Test1/Test1.zip',
-    URLs.PDC_2019_Test2 : 'PDC_2019/Test2/Test2.zip',
-
-}
-
 
 class Config():
     "Creates a default config file 'config.yml' in $FASTPM HOME (default `~/.fastpm/`)"
     DEFAULT_CONFIG_LOCATION = os.path.expanduser(os.getenv('FASTPM_HOME', '~/.fastpm'))
     DEFAULT_CONFIG_PATH = DEFAULT_CONFIG_LOCATION + '/config.yml'
     DEFAULT_CONFIG = {
-        'data_path': DEFAULT_CONFIG_LOCATION + '/data',
-        'data_archive_path': DEFAULT_CONFIG_LOCATION + '/data'
+        'data_path': DEFAULT_CONFIG_LOCATION + '/data'
     }
 
     @classmethod
@@ -165,33 +116,61 @@ class Config():
             yaml.dump(cls.DEFAULT_CONFIG, yaml_file, default_flow_style=False)
 
 
-def _expand_path(fpath): return Path(fpath).expanduser()
+def download_url(url:str, dest:str, fname:str=None, overwrite:bool=False, pbar:ProgressBar=None,
+                 show_progress=True, chunk_size=1024*1024, timeout=4, retries=5)->None:
+    "Download `url` to `dest` unless it exists and not `overwrite`."
+    if os.path.exists(dest) and not overwrite: return
+
+    s = requests.Session()
+    s.mount('http://',requests.adapters.HTTPAdapter(max_retries=retries))
+    u = s.get(url, stream=True, timeout=timeout)
+    try:
+        file_size = int(u.headers["Content-Length"])
+    except: show_progress = False
+
+    with open(dest, 'wb') as f:
+        nbytes = 0
+        if show_progress: pbar = progress_bar(range(file_size), auto_update=False, leave=False, parent=pbar)
+        try:
+            for chunk in u.iter_content(chunk_size=chunk_size):
+                nbytes += len(chunk)
+                if show_progress: pbar.update(nbytes)
+                f.write(chunk)
+        except requests.exceptions.ConnectionError as e:
+            fname = url.split('/')[-1]
+            from fastai.datasets import Config
+            data_dir = Config().data_path()
+            timeout_txt =(f'\n Download of {url} has failed after {retries} retries\n'
+                          f' Fix the download manually:\n'
+                          f'$ mkdir -p {data_dir}\n'
+                          f'$ cd {data_dir}\n'
+                          f'$ wget -c {url}\n'
+                          f'$ tar -zxvf {fname}\n\n'
+                          f'And re-run your code once the download is successful\n')
+            print(timeout_txt)
+            import sys;sys.exit(1)
+
+
 def url2name(url):
-    fname=''
-    if url in _filenames:
-        fname=_filenames[url]
-        print(fname)
-    else:
-        u = requests.get(url)
-        if "Content-Disposition" in u.headers.keys():
-            fname = re.findall("filename=(.+)", u.headers["Content-Disposition"])[0].replace('"', '').replace("'", '').replace(";", '')
-        else: fname = url.split("/")[-1]
+    fname = url.split("/")[-1].split("=")[-1]
     return fname
 
+def url2folder(url):
+    fname = url.split("path=%2F")[-1].split("&")[0]
+    return fname
 
-#TODO: simplify this mess
-def url2path(url, data=True):
+def url2path(url):
     "Change `url` to a path."
     name = url2name(url)
-    return datapath4file(name, archive=False)
+    folder=url2folder(url)
+    return datapath4file(name,folder)
 
 
-def datapath4file(filename, archive=True):
+def datapath4file(filename,folder):
     "Return data path to `filename`, checking locally first then in the config file."
-    local_path = URLs.LOCAL_PATH/'data'/filename
-    if local_path.exists(): return local_path
-    elif archive: return Config.data_archive_path() / filename
-    else: return Config.data_path() / filename
+    local_path = URLs.LOCAL_PATH/folder
+    if local_path.exists(): return local_path/filename
+    else: return Config.data_path()/folder/filename
 
 def download_data(url:str, fname:PathOrStr=None) -> Path:
     "Download `url` to destination `fname`."
@@ -204,7 +183,6 @@ def download_data(url:str, fname:PathOrStr=None) -> Path:
 
 
 
-PathOrStr = Union[Path,str]
 
 def unzip(path):
     newpath=path.parent
@@ -234,4 +212,3 @@ def untar_data(url:str, fname:PathOrStr=None) -> Path:
         print('not supported compression format')
         return path
     return extract(path)
-#untar_data(URLs.BPIC_2016_Clicks_Logged_in)
