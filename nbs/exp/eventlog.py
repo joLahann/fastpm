@@ -95,7 +95,10 @@ class EventLog():
     def _get_attributes(self): return self._attributes
 
     def _trace_attributes(self):
-        return pd.DataFrame(self._traceAttributeList,columns=self._traceAttributeColumns)
+        df= pd.DataFrame(self._traceAttributeList,columns=self._traceAttributeColumns)
+        df.index=df['concept:name']
+        df=df.drop('concept:name',axis=1)
+        return df
     def _event_stream(self,convertTime=True):
         df=pd.DataFrame(self._eventList,columns=self._eventColumns)
         if convertTime:

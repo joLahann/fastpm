@@ -64,6 +64,7 @@ class URLs():
     PDC_2019_Test2 = 'http://icpmconference.org/2019/wp-content/uploads/sites/6/2019/04/log-15March.zip'
 
 
+def _expand_path(fpath): return Path(fpath).expanduser()
 
 class Config():
     "Creates a default config file 'config.yml' in $FASTPM HOME (default `~/.fastpm/`)"
