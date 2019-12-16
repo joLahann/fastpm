@@ -377,11 +377,14 @@ from torch import LongTensor,FloatTensor
 def process_data_for_next_step_prediction(test,startIndex=1):
     xs,ys=[],[]
     for trace in progress_bar(test.items):
-        for i in range(startIndex,len(listify(trace))):
+        for i in range(startIndex,len(listify(trace))-1):
             x,y=[],[]
             xs.append(tensor(trace[:i]))
             ys.append(tensor(trace[i]))
     return xs,tensor(ys)
+
+def func(t):
+    return len(pd_data[int(t)][0])
 
 from torch.utils.data import Sampler
 
@@ -417,9 +420,6 @@ def pad_collate(samples, pad_idx=1, pad_first=False):
         else:         res[i, :len(s[0]) ] = LongTensor(s[0])
     return res, tensor([s[1] for s in samples])
 
-def func(t):
-    return len(pd_data[int(t)][0])
-
 def predict_next_step(learner, test_dl):
     iter_dl = iter(test_dl)
     learner.model.cuda()
@@ -435,7 +435,7 @@ def predict_next_step(learner, test_dl):
 def process_data_for_suffix_prediction(test,startIndex=1):
     xs,ys=[],[]
     for trace in progress_bar(test.items):
-        for i in range(startIndex,len(listify(trace))):
+        for i in range(startIndex,len(listify(trace))-1):
             x,y=[],[]
             xs.append(tensor(trace[:i]))
             ys.append(tensor(trace[i:]))
